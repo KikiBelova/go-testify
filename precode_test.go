@@ -23,10 +23,11 @@ func TestMainHandlerWhenCountMoreThanTotal(t *testing.T) {
 	responseBody := responseRecorder.Body.String()
 	gotList := strings.Split(responseBody, ",")
 
-	assert.Len(t, gotList, totalCount, "want len of cafe list %d, got %d", totalCount, len(gotList))
+	assert.Len(t, gotList, totalCount)
 }
 
 func TestMainHandlerWhenRequestValid(t *testing.T) {
+	totalCount := 3
 	req := httptest.NewRequest("GET", "/cafe?count=3&city=moscow", nil)
 
 	responseRecorder := httptest.NewRecorder()
@@ -35,7 +36,8 @@ func TestMainHandlerWhenRequestValid(t *testing.T) {
 
 	require.Equal(t, http.StatusOK, responseRecorder.Code, "want status code %d, got %d", http.StatusOK, responseRecorder.Code)
 
-	assert.NotEmpty(t, responseRecorder.Body)
+	cafes := strings.Split(responseRecorder.Body.String(), ",")
+	assert.Len(t, cafes, totalCount)
 }
 
 func TestMainHandlerWhenCityInvalid(t *testing.T) {
